@@ -25,27 +25,37 @@ public class ArquivosController implements IArquivosController{
 		File arq = new File(path, arquivo);
 		File dir = new File(path);
 		if(dir.exists() && dir.isDirectory()) {
-			FileInputStream fluxo = new FileInputStream(arq);
-			InputStreamReader leitor = new InputStreamReader(fluxo);
-			BufferedReader buffer = new BufferedReader(leitor);
-			String linha = buffer.readLine();
-			while(linha != null) { //procurando EOF
-				if(linha.contains(String.valueOf(codigo))) {
-					buffer.close();
-					leitor.close();
-					fluxo.close();
-					return true;
+			if(arq.exists()) {
+				FileInputStream fluxo = new FileInputStream(arq);
+				InputStreamReader leitor = new InputStreamReader(fluxo);
+				BufferedReader buffer = new BufferedReader(leitor);
+				String linha = buffer.readLine();
+				while(linha != null) { //procurando EOF
+					if(linha.contains(String.valueOf(codigo))) {
+						buffer.close();
+						leitor.close();
+						fluxo.close();
+						return true;
+					}
+					linha = buffer.readLine();
 				}
-				linha = buffer.readLine();
+				buffer.close();
+				leitor.close();
+				fluxo.close();
+			}else {
+				FileWriter fileWriter = new FileWriter(arq);
+				PrintWriter print = new PrintWriter(fileWriter);
+				print.write("");
+				print.flush();
+				print.close();
+				fileWriter.close();
 			}
-			buffer.close();
-			leitor.close();
-			fluxo.close();
-		}else {
 			
+		}else {
+
 			throw new IOException("Arquivo inválido");
 		}
-		
+
 		return false;
 	}
 
@@ -67,7 +77,7 @@ public class ArquivosController implements IArquivosController{
 		}else {
 			throw new IOException("Arquivo inválido");
 		}
-		
+
 	}
 
 	@Override
@@ -82,14 +92,14 @@ public class ArquivosController implements IArquivosController{
 			print.close();
 			fileWriter.close();
 		}else {
-			JOptionPane.showMessageDialog(null, "Se é burro ou quer 1 real. Insere um código que não existe idiota, junto com o CPF e a senha do Banco");
+			JOptionPane.showMessageDialog(null, "Se é burro ou quer 1 real. Insere um código que não existe");
 		}
 	}
-	
+
 	private String geraTxt(int codigo, String nome, String email) {
 		StringBuffer buffer = new StringBuffer();
 		String linha = "";
-		
+
 		linha = "Código:;" + codigo + "\n";
 		linha = linha + "Nome:;" + nome + "\n";
 		linha = linha + "Email:;" + email + "\n";
